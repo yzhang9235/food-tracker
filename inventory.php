@@ -94,6 +94,11 @@ $result = $stmt->get_result();
                     <td><?php echo htmlspecialchars($row['purchase_date'] ?? ''); ?></td>
                     <td><?php echo htmlspecialchars($row['expiration_date']); ?></td>
                     <td><?php echo htmlspecialchars($row['status']); ?></td>
+                    <td>
+                        <a class="edit-link" href="food_update.php?id=<?php echo $row['item_id']; ?>">
+                            Edit
+                        </a>
+                    </td>
                 </tr>
             <?php endwhile; ?>
         </table>
