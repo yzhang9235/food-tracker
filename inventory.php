@@ -98,6 +98,11 @@ $result = $stmt->get_result();
                         <a class="edit-link" href="food_update.php?id=<?php echo $row['item_id']; ?>">
                             Edit
                         </a>
+                        <form action="food_delete.php" method="POST" 
+                            onsubmit="return confirm('Are you sure you want to delete this item?');">
+                            <input type="hidden" name="item_id" value="<?php echo $row['item_id']; ?>">
+                            <button type="submit">Delete</button>
+                        </form>
                     </td>
                 </tr>
             <?php endwhile; ?>
