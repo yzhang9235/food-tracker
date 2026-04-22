@@ -391,7 +391,6 @@ footer .logo {
 
 footer .logo span { color: var(--rust-lt); font-style: italic; }
 
-/* ── ANIMATIONS ── */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(18px); }
   to   { opacity: 1; transform: translateY(0); }
