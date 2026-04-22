@@ -1,25 +1,42 @@
+<!--
+Food Tracker - Create a New User
+-->
+
 <?php
-include "db.php";
+require_once "db_connect.php";
 
-// receive data from front end
-$username = $_POST['username'];
-$email = $_POST['email'];
-$password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // get input and validate it
+    $username = trim($_POST['username']);
+    $email = trim($_POST['email']);
+    $password = $_POST['password'];
+    if (empty($username) || empty($email) || empty($password)) {
+        die("All fields are required.");
+    }
 
-$sql = "INSERT INTO users (username, email, password)
-        VALUES (?, ?, ?)";
+    // hash the password
+    $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-// connect to database
-$stmt = $conn->prepare($sql);
-//process three variables as string type
-$stmt->bind_param("sss", $username, $email, $password);
+    // SQL matches your users table schema
+    $sql = "INSERT INTO users (username, email, password_hash)
+            VALUES (?, ?, ?)";
 
-if ($stmt->execute()) {
-    echo "success";
-    // if register successfully, jump to login.php
-    header("Location: login.php");
-    exit();
-} else {
-    echo "error";
+    // add a new user to the database `users`
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        die("Prepare failed: " . $conn->error);
+    }
+    $stmt->bind_param("sss", $username, $email, $password_hash);
+
+    if ($stmt->execute()) {
+        // if register successfully, jump to login.php
+        header("Location: login.php");
+        exit();
+    } else {
+        echo "Registration failed: " . $stmt->error;
+    }
+
+    $stmt->close();
+    $conn->close();
 }
 ?>
