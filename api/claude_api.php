@@ -52,13 +52,29 @@ Do not include any extra text."
   ]
 ];
 
-$ch = curl_init("https://api.anthropic.com/v1/messages");
 
+// get api key from .env
+$envFile = __DIR__ . '/.env';
+if (file_exists($envFile)) {
+    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos($line, '=') !== false && strpos($line, '#') !== 0) {
+            [$key, $value] = explode('=', $line, 2);
+            $_ENV[trim($key)] = trim($value);
+        }
+    }
+}
+
+$apiKey = $_ENV['ANTHROPIC_API_KEY'] ?? null;
+
+error_reporting(E_ALL);
+
+$ch = curl_init("https://api.anthropic.com/v1/messages");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
     "Content-Type: application/json",
-    "x-api-key: secrete",
+    "x-api-key: " . $apiKey,
     "anthropic-version: 2023-06-01"
 ]);
 
@@ -67,13 +83,17 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
 
 // get json return from claude
 $response = curl_exec($ch);
-if (!$response) {
-    echo json_encode([
-        "success" => false,
-        "error" => "Claude API failed"
-    ]);
-    exit;
-}
+
+$purchaseDate = date('Y-m-d'); 
+$expirationDate = date('Y-m-d', strtotime('+' . $foodData['estimated_expiration_days'] . ' days'));
+echo json_encode([
+    "success" => true,
+    "name" => $foodData['name'],
+    "category" => $foodData['category'],
+    "expiration_date" => $expirationDate,
+    "purchase_date" => $purchaseDate
+]);
+
 
 //curl_close($ch);
 

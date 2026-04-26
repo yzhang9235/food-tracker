@@ -95,13 +95,13 @@ document.getElementById("capture-btn").addEventListener("click", () => {
   ctx.drawImage(video, 0, 0);
   const imageData = canvas.toDataURL("image/png");
   sendToBackend(imageData);
-});
 
-//close camera
-if (stream) {
-  stream.getTracks().forEach(track => track.stop());
-}
-video.style.display = "none";
+  //close camera
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop());
+  }
+  video.style.display = "none";
+});
 
 function sendToBackend(imageData) {
   fetch("/api/claude_api.php", {
@@ -127,14 +127,17 @@ function sendToBackend(imageData) {
 
   .then(data => {
     console.log("Claude result:", data);
+    if (data.success) {
+      document.getElementById("item_name").value = data.name;
+      document.getElementById("category").value = data.category;
+      document.getElementById("expiration_date").value = data.expiration_date;
+      document.getElementById("purchase_date").value = data.purchase_date;
+    }
   })
   .catch(err => {
     console.error(err);
   });
 }
-
-
-
 
 
 if (addBtn) {
