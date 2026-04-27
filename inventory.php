@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FoodTracker — My Inventory</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="styles.css" />
   <style>
     .inv-page {
       min-height: 100vh;
@@ -298,6 +298,42 @@
       .inv-table td:nth-child(4) { display: none; }
       nav .nav-links { display: none; }
     }
+
+    .camera-wrap {
+      display: none;
+      background: #fff;
+      border-radius: 20px;
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 24px rgba(42,34,25,0.07);
+    }
+
+    .camera-wrap.open {
+      display: block;
+    }
+
+    #camera-video {
+      width: 100%;
+      max-width: 520px;
+      border-radius: 14px;
+      display: block;
+      margin: 0 auto 1rem;
+      background: #000;
+    }
+
+    .camera-actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    #scan-result {
+      margin-top: 0.9rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
@@ -320,6 +356,7 @@
       </div>
       <div class="header-actions">
         <button class="btn btn-primary" id="add-item-btn">+ Add item</button>
+        <button class="btn btn-secondary" id="open-camera-btn">Scan food</button>
         <a href="backend/logout.php" class="btn-logout">Sign out</a>
       </div>
     </div>
@@ -337,6 +374,16 @@
         <div class="stat-label">Most recent</div>
         <div class="stat-value rust" id="stat-recent" style="font-size:1rem;padding-top:0.5rem;">-</div>
       </div>
+    </div>
+
+    <div class="camera-wrap" id="camera-wrap">
+      <video id="camera-video" autoplay playsinline></video>
+      <canvas id="camera-canvas" style="display:none;"></canvas>
+      <div class="camera-actions">
+        <button class="btn btn-primary" id="capture-btn">Capture</button>
+        <button class="btn btn-secondary" id="close-camera-btn">Cancel</button>
+      </div>
+      <p id="scan-result"></p>
     </div>
 
     <div class="add-form" id="add-form">
@@ -410,6 +457,84 @@
   <script>
     const API = 'backend';
     let allItems = [];
+
+    let cameraStream = null;
+
+    document.getElementById('open-camera-btn').addEventListener('click', async () => {
+      const wrap = document.getElementById('camera-wrap');
+      wrap.classList.add('open');
+      document.getElementById('scan-result').textContent = '';
+
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment' }
+        });
+        document.getElementById('camera-video').srcObject = cameraStream;
+      } catch (err) {
+        document.getElementById('scan-result').textContent = 'Camera access denied or unavailable.';
+      }
+    });
+
+    document.getElementById('close-camera-btn').addEventListener('click', stopCamera);
+
+    document.getElementById('capture-btn').addEventListener('click', async () => {
+      const video = document.getElementById('camera-video');
+      const canvas = document.getElementById('camera-canvas');
+
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+
+      const imageData = canvas.toDataURL('image/jpeg');
+      stopCamera();
+
+      const scanResult = document.getElementById('scan-result');
+      const addForm = document.getElementById('add-form');
+
+      scanResult.textContent = 'Image captured. Identifying food...';
+      addForm.classList.add('open');
+
+      try {
+        const res = await fetch('api/claude_api.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: imageData })
+        });
+
+        const data = await res.json();
+
+        // testing
+        console.log("API response:", data);
+        alert(JSON.stringify(data));
+
+        if (!data.success) {
+          scanResult.textContent = data.error || 'Could not identify the food.';
+          return;
+        }
+
+        document.getElementById('item-name').value = data.name || '';
+        document.getElementById('item-expiry').value = data.expiration_date || '';
+        document.getElementById('item-quantity').value = '';
+
+        const categorySelect = document.getElementById('item-category');
+        const allowed = ['produce', 'dairy', 'meat', 'pantry', 'frozen', 'other'];
+        const apiCategory = (data.category || 'other').toLowerCase();
+
+        categorySelect.value = allowed.includes(apiCategory) ? apiCategory : 'other';
+
+        scanResult.textContent = 'Food identified. Please review the form before saving.';
+      } catch (err) {
+        scanResult.textContent = 'Could not process the image.';
+      }
+    });
+
+    function stopCamera() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+      }
+      document.getElementById('camera-wrap').classList.remove('open');
+    }
 
     async function loadInventory() {
       try {
