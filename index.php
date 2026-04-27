@@ -6,6 +6,41 @@
   <title>FoodTracker — Waste Less, Cook More</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .camera-wrap {
+      display: none;
+      margin-top: 1.5rem;
+      background: #fff;
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 24px rgba(42,34,25,0.07);
+    }
+
+    .camera-wrap.open { display: block; }
+
+    .camera-wrap video {
+      width: 100%;
+      max-width: 480px;
+      border-radius: 12px;
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .camera-wrap canvas { display: none; }
+
+    .camera-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    #scan-result {
+      margin-top: 1rem;
+      font-size: 0.88rem;
+      color: var(--sage-dk);
+      min-height: 1.2em;
+    }
+  </style>
 </head>
 <body>
 
@@ -14,24 +49,23 @@
     <div class="nav-links">
       <a href="#features">Features</a>
       <a href="#how">How it works</a>
-      <a href="login.html" class="btn btn-nav">Sign in</a>
+      <a href="login.php" class="btn btn-nav">Sign in</a>
     </div>
   </nav>
 
   <section class="hero">
     <div class="hero-text">
-      <span class="tag">🌿 Reduce food waste</span>
+      <span class="tag">Reduce food waste</span>
       <h1>Know what's in<br>your <em>fridge</em>,<br>cook more.</h1>
       <p class="hero-sub">FoodTracker helps you track expiration dates, manage your pantry, and discover recipes from ingredients you already have — so nothing goes to waste.</p>
       <div class="hero-actions">
-        <a href="register.html" class="btn btn-primary">Get started free</a>
+        <a href="register.php" class="btn btn-primary">Get started free</a>
         <a href="#how" class="btn btn-secondary">See how it works</a>
       </div>
     </div>
 
     <div class="hero-visual">
       <div class="card">
-        <span class="card-icon">🥘</span>
         <span class="card-label">Suggested recipe</span>
         <div class="card-title">Spinach Frittata</div>
         <div class="recipe-chips">
@@ -41,7 +75,6 @@
         </div>
       </div>
       <div class="card">
-        <span class="card-icon">📦</span>
         <span class="card-label">In your pantry</span>
         <div class="card-title" style="font-size:1.8rem;font-family:'Playfair Display',serif;color:var(--rust);">24</div>
         <div style="font-size:0.82rem;color:var(--muted);margin-top:0.2rem;">items tracked</div>
@@ -57,25 +90,21 @@
     <div class="feat-grid">
       <div class="feat-item reveal">
         <div class="feat-num">01</div>
-        <span class="feat-icon">🏷️</span>
         <div class="feat-title">Expiration Tracking</div>
         <p class="feat-desc">Set expiry dates when you add food. Get alerts before items go bad so you can use them first.</p>
       </div>
       <div class="feat-item reveal">
         <div class="feat-num">02</div>
-        <span class="feat-icon">📋</span>
         <div class="feat-title">Smart Inventory</div>
         <p class="feat-desc">Organize your fridge and pantry in one place. Edit, delete, and mark items as used with ease.</p>
       </div>
       <div class="feat-item reveal">
         <div class="feat-num">03</div>
-        <span class="feat-icon">👨‍🍳</span>
         <div class="feat-title">Recipe Suggestions</div>
         <p class="feat-desc">Tell us what you have — we'll suggest meals from our recipe API so nothing gets thrown out.</p>
       </div>
       <div class="feat-item reveal">
         <div class="feat-num">04</div>
-        <span class="feat-icon">🔔</span>
         <div class="feat-title">Expiry Alerts</div>
         <p class="feat-desc">Visual alerts highlight items that are expiring soon right on your dashboard, front and center.</p>
       </div>
@@ -118,7 +147,20 @@
         <span class="section-tag" style="color:var(--rust);">Your pantry</span>
         <h2 class="inventory-title">What's in your kitchen</h2>
       </div>
-      <button class="btn btn-primary" id="add-item-btn">+ Add item</button>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+        <button class="btn btn-primary" id="add-item-btn">+ Add item</button>
+        <button class="btn btn-secondary" id="open-camera-btn">Scan food</button>
+      </div>
+    </div>
+
+    <div class="camera-wrap" id="camera-wrap">
+      <video id="camera-video" autoplay playsinline></video>
+      <canvas id="camera-canvas"></canvas>
+      <div class="camera-actions">
+        <button class="btn btn-primary" id="capture-btn">Capture</button>
+        <button class="btn btn-secondary" id="close-camera-btn">Cancel</button>
+      </div>
+      <p id="scan-result"></p>
     </div>
 
     <div class="add-form reveal" id="add-form" style="display:none;">
@@ -137,12 +179,12 @@
     </div>
 
     <div class="inv-table-wrap reveal">
-      <div class="inv-loading" id="inv-loading">Loading your inventory2026</div>
+      <div class="inv-loading" id="inv-loading">Loading your inventory...</div>
       <table class="inv-table" id="inv-table" style="display:none;">
         <thead><tr><th>Item</th><th>Category</th><th>Quantity</th><th>Added</th><th>Actions</th></tr></thead>
         <tbody id="inv-body"></tbody>
       </table>
-      <p class="inv-empty" id="inv-empty" style="display:none;">No items yet 2014 add something above!</p>
+      <p class="inv-empty" id="inv-empty" style="display:none;">No items yet — add something above!</p>
     </div>
   </section>
 
@@ -150,7 +192,7 @@
     <div class="cta-inner reveal">
       <h2>Ready to waste <em>less</em>?</h2>
       <p>Join FoodTracker and take control of what's in your kitchen — one item at a time.</p>
-      <a href="register.html" class="btn btn-primary" style="font-size:1rem;padding:1rem 2.5rem;">Create your free account</a>
+      <a href="register.php" class="btn btn-primary" style="font-size:1rem;padding:1rem 2.5rem;">Create your free account</a>
     </div>
   </section>
 
@@ -161,5 +203,44 @@
   </footer>
 
   <script src="main.js" defer></script>
+  <script>
+    let cameraStream = null;
+
+    document.getElementById('open-camera-btn').addEventListener('click', async () => {
+      const wrap = document.getElementById('camera-wrap');
+      wrap.classList.add('open');
+      document.getElementById('scan-result').textContent = '';
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        document.getElementById('camera-video').srcObject = cameraStream;
+      } catch (err) {
+        document.getElementById('scan-result').textContent = 'Camera access denied or unavailable.';
+      }
+    });
+
+    document.getElementById('close-camera-btn').addEventListener('click', stopCamera);
+
+    document.getElementById('capture-btn').addEventListener('click', () => {
+      const video  = document.getElementById('camera-video');
+      const canvas = document.getElementById('camera-canvas');
+      canvas.width  = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+      const imageData = canvas.toDataURL('image/jpeg');
+      stopCamera();
+      document.getElementById('scan-result').textContent = 'Image captured. Processing...';
+      document.getElementById('item-name').value = '';
+      document.getElementById('add-form').style.display = 'block';
+      document.getElementById('scan-result').textContent = 'Fill in the details for your scanned item.';
+    });
+
+    function stopCamera() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(t => t.stop());
+        cameraStream = null;
+      }
+      document.getElementById('camera-wrap').classList.remove('open');
+    }
+  </script>
 </body>
 </html>
