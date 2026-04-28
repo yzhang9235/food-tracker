@@ -419,6 +419,8 @@ footer .logo span { color: var(--rust-lt); font-style: italic; }
   .how { grid-template-columns: 1fr; gap: 3rem; }
   .how-visual { order: -1; }
   nav .nav-links { display: none; }
+  .inv-table th:nth-child(4),
+  .inv-table td:nth-child(4) {display: none;}
 }
 
 .inventory-section {
@@ -603,4 +605,14 @@ footer .logo span { color: var(--rust-lt); font-style: italic; }
   .inv-table td:nth-child(3),
   .inv-table th:nth-child(4),
   .inv-table td:nth-child(4) { display: none; }
+}
+
+.expired-date {
+  color: #c62828;
+  font-weight: 700;
+}
+
+.expiry-soon {
+  color: var(--rust);
+  font-weight: 500;
 }
