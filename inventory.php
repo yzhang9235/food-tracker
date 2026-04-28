@@ -339,7 +339,7 @@
     }
 
     .expired-date {
-    color: #c62828;
+    color: #c62828 !important;
     font-weight: 700;
     }
 
