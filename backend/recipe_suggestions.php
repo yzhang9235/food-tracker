@@ -107,7 +107,7 @@ if (!isset($_SESSION['user_id'])) {
 	<div id="message"></div>
 	<div id="recipesContainer"></div>
 
-	<script src="js/recipes.js"></script>
+	<script src="../js/recipes.js"></script>
 </body>
 
 </html>
