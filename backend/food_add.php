@@ -24,29 +24,11 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 $user_id = $_SESSION['user_id'];
 
 // remove white space
-if (isset($_POST['item_name'])) {
-    $item_name = trim($_POST['item_name']);
-} else {
-    $item_name = '';
-}
-
-if (isset($_POST['category'])) {
-    $category = trim($_POST['category']);
-} else {
-    $category = '';
-}
-
-if (isset($_POST['quantity'])) {
-    $quantity = trim($_POST['quantity']);
-} else {
-    $quantity = '';
-}
-
-$expiration_date = null;
-// if there is a value, use it, otherwise set it to be zero
-if (isset($_POST['expiration_date']) && $_POST['expiration_date'] !== '') {
-    $expiration_date = $_POST['expiration_date'];
-}
+$item_name = trim($_POST['item_name'] ?? '');
+$category = trim($_POST['category'] ?? '');
+$quantity = isset($_POST['quantity']) && $_POST['quantity'] !== '' ? (int) $_POST['quantity'] : null;
+$unit = trim($_POST['unit'] ?? '');
+$expiration_date = !empty($_POST['expiration_date']) ? $_POST['expiration_date'] : null;
 
 if ($item_name === '') {
     echo json_encode([
