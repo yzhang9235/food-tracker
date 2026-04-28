@@ -338,9 +338,14 @@
       width: 100%;
     }
 
+    .expired-date {
+    color: #c62828;
+    font-weight: 700;
+    }
+
     .expiry-soon {
-      color: var(--rust);
-      font-weight: 500;
+    color: var(--rust);
+    font-weight: 500;
     }
 
     @media (max-width: 768px) {
