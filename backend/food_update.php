@@ -22,30 +22,13 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
 $user_id = $_SESSION['user_id']; // Get logged-in user id from session
 
-// Get item_id safely, default to 0 if not provided
-if (isset($_POST['item_id'])) {
-    $item_id = (int) $_POST['item_id'];
-} else {
-    $item_id = 0;
-}
-// Get item name
-if (isset($_POST['item_name'])) {
-    $item_name = trim($_POST['item_name']);
-} else {
-    $item_name = '';
-}
-// Get category
-if (isset($_POST['category'])) {
-    $category = trim($_POST['category']);
-} else {
-    $category = '';
-}
-// Get quantity
-if (isset($_POST['quantity'])) {
-    $quantity = trim($_POST['quantity']);
-} else {
-    $quantity = '';
-}
+// Get info about the item
+$item_id = (int) ($_POST['item_id'] ?? 0);
+$item_name = trim($_POST['item_name'] ?? '');
+$category = trim($_POST['category'] ?? '');
+$quantity = isset($_POST['quantity']) && $_POST['quantity'] !== '' ? (int) $_POST['quantity'] : null;
+$unit = trim($_POST['unit'] ?? '');
+$expiration_date = !empty($_POST['expiration_date']) ? $_POST['expiration_date'] : null;
 
 // Validate required fields
 if ($item_id <= 0 || $item_name === '') {
@@ -58,7 +41,7 @@ if ($item_id <= 0 || $item_name === '') {
 
 // SQL query to update item 
 $sql = "UPDATE food_items
-        SET item_name = ?, category = ?, quantity = ?
+        SET item_name = ?, category = ?, quantity = ?, unit = ?, expiration_date = ?
         WHERE item_id = ? AND user_id = ?";
 
 $stmt = $conn->prepare($sql);
@@ -72,7 +55,7 @@ if (!$stmt) {
 }
 
 // Bind parameters to SQL statement
-$stmt->bind_param("sssii", $item_name, $category, $quantity, $item_id, $user_id);
+$stmt->bind_param("ssissii", $item_name, $category, $quantity, $unit, $expiration_date, $item_id, $user_id);
 
 // Execute update query
 if ($stmt->execute()) {
