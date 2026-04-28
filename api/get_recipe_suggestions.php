@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 	exit();
 }
 
-require_once("../backend/db.php");
+require_once("../backend/db_connect.php");
 require_once("../config/spoonacular.php");
 
 $user_id = $_SESSION['user_id'];
