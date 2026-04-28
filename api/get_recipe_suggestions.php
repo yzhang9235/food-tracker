@@ -1,8 +1,8 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-ini_set('display_errors', 0);
 
+// stop here if the user is not logged in
 if (!isset($_SESSION['user_id'])) {
 	echo json_encode([
 		"success" => false,
@@ -11,39 +11,36 @@ if (!isset($_SESSION['user_id'])) {
 	exit();
 }
 
+// load database connection and Spoonacular API key
 require_once("../backend/db_connect.php");
 require_once("../config/spoonacular.php");
 
 $user_id = $_SESSION['user_id'];
 $ingredients = [];
 
+// if user typed ingredients manually, use those first
 if (isset($_GET['ingredients']) && trim($_GET['ingredients']) !== "") {
 	$ingredients = array_map('trim', explode(",", $_GET['ingredients']));
 } else {
-	$sql = "SELECT item_name FROM food_items WHERE user_id = ? AND status != 'used'";
-	$stmt = $conn->prepare($sql);
+	try {
+		// otherwise, pull ingredient names from this user's inventory
+		$sql = "SELECT item_name FROM food_items WHERE user_id = :user_id AND status != 'used'";
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute(['user_id' => $user_id]);
 
-	if (!$stmt) {
+		// fetch just the item_name column into an array
+		$ingredients = $stmt->fetchAll(PDO::FETCH_COLUMN);
+	} catch (PDOException $e) {
 		echo json_encode([
 			"success" => false,
-			"message" => "Database prepare failed.",
-			"error" => $conn->error
+			"message" => "Database error.",
+			"error" => $e->getMessage()
 		]);
 		exit();
 	}
-
-	$stmt->bind_param("i", $user_id);
-	$stmt->execute();
-
-	$result = $stmt->get_result();
-
-	while ($row = $result->fetch_assoc()) {
-		$ingredients[] = $row['item_name'];
-	}
-
-	$stmt->close();
 }
 
+// if there are no ingredients, stop before calling the recipe API
 if (empty($ingredients)) {
 	echo json_encode([
 		"success" => false,
@@ -54,21 +51,24 @@ if (empty($ingredients)) {
 
 $ingredientString = implode(",", $ingredients);
 
+// build the Spoonacular request URL
 $url = "https://api.spoonacular.com/recipes/findByIngredients"
 	. "?ingredients=" . urlencode($ingredientString)
-	. "&number=10"
-	. "&ranking=1"
-	. "&ignorePantry=true"
+	. "&number=6"             // limit results to 6 recipes
+	. "&ranking=1"            // let Spoonacular rank the recipes
+	. "&ignorePantry=true"    // ignore common pantry items in matching
 	. "&apiKey=" . urlencode($spoonacular_api_key);
 
+// initialize cURL request
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // return response as a string
+curl_setopt($ch, CURLOPT_TIMEOUT, 15);          // stop if request takes too long
 
 $response = curl_exec($ch);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
+// handle network/cURL-level errors
 if (curl_errno($ch)) {
 	echo json_encode([
 		"success" => false,
@@ -98,3 +98,4 @@ echo json_encode([
 	"ingredients_used" => $ingredients,
 	"recipes" => $data
 ]);
+?>
