@@ -2,7 +2,7 @@
 session_start();
 header("Content-Type: application/json");
 
-require_once "db_connect.php";
+require_once "db_connect.php"; // Database connection file
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     echo json_encode([
@@ -12,9 +12,20 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     exit();
 }
 
-$email = trim($_POST['email'] ?? '');
-$password = $_POST['password'] ?? '';
+// Get email safely
+if (isset($_POST['email'])) {
+    $email = trim($_POST['email']);
+} else {
+    $email = '';
+}
+// Get password safely
+if (isset($_POST['password'])) {
+    $password = $_POST['password'];
+} else {
+    $password = '';
+}
 
+// Validate input
 if ($email === '' || $password === '') {
     echo json_encode([
         "success" => false,
@@ -23,6 +34,7 @@ if ($email === '' || $password === '') {
     exit();
 }
 
+// Prepare SQL to find user by email
 $sql = "SELECT user_id, username, password_hash FROM users WHERE email = ?";
 $stmt = $conn->prepare($sql);
 
@@ -34,11 +46,15 @@ if (!$stmt) {
     exit();
 }
 
+// Bind email parameter
 $stmt->bind_param("s", $email);
+// Execute query
 $stmt->execute();
+// Get result
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 
+// Verify user and password
 if ($user && password_verify($password, $user['password_hash'])) {
     $_SESSION['user_id'] = $user['user_id'];
     $_SESSION['username'] = $user['username'];

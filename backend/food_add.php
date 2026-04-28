@@ -1,8 +1,9 @@
 <?php
-session_start();
+session_start(); //start the session to access user login info
 header("Content-Type: application/json");
-require_once "db_connect.php";
+require_once "db_connect.php"; //include database connection
 
+//check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     echo json_encode([
         "success" => false,
@@ -11,6 +12,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+//Only allow POST request
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     echo json_encode([
         "success" => false,
@@ -21,10 +23,30 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
 $user_id = $_SESSION['user_id'];
 
-$item_name = trim($_POST['item_name'] ?? '');
-$category = trim($_POST['category'] ?? '');
-$quantity = trim($_POST['quantity'] ?? '');
-$expiration_date = !empty($_POST['expiration_date']) ? $_POST['expiration_date'] : null;
+// remove white space
+if (isset($_POST['item_name'])) {
+    $item_name = trim($_POST['item_name']);
+} else {
+    $item_name = '';
+}
+
+if (isset($_POST['category'])) {
+    $category = trim($_POST['category']);
+} else {
+    $category = '';
+}
+
+if (isset($_POST['quantity'])) {
+    $quantity = trim($_POST['quantity']);
+} else {
+    $quantity = '';
+}
+
+$expiration_date = null;
+// if there is a value, use it, otherwise set it to be zero
+if (isset($_POST['expiration_date']) && $_POST['expiration_date'] !== '') {
+    $expiration_date = $_POST['expiration_date'];
+}
 
 if ($item_name === '') {
     echo json_encode([
@@ -34,11 +56,13 @@ if ($item_name === '') {
     exit();
 }
 
+//prepare SQL insert statement
 $sql = "INSERT INTO food_items (user_id, item_name, category, quantity, expiration_date, status)
         VALUES (?, ?, ?, ?, ?, 'active')";
 
 $stmt = $conn->prepare($sql);
 
+//check if prepare failed
 if (!$stmt) {
     echo json_encode([
         "success" => false,
@@ -47,14 +71,17 @@ if (!$stmt) {
     exit();
 }
 
+// bine parameters to the SQL statement
 $stmt->bind_param("issss", $user_id, $item_name, $category, $quantity, $expiration_date);
 
+// execute the statement
 if ($stmt->execute()) {
     echo json_encode([
         "success" => true,
         "message" => "Item added successfully."
     ]);
 } else {
+    // return error if execution fails
     echo json_encode([
         "success" => false,
         "message" => "Insert failed: " . $stmt->error
