@@ -606,13 +606,3 @@ footer .logo span { color: var(--rust-lt); font-style: italic; }
   .inv-table th:nth-child(4),
   .inv-table td:nth-child(4) { display: none; }
 }
-
-.expired-date {
-  color: #c62828;
-  font-weight: 700;
-}
-
-.expiry-soon {
-  color: var(--rust);
-  font-weight: 500;
-}
