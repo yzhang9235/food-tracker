@@ -344,7 +344,7 @@
     }
 
     .expiry-soon {
-    color: var(--rust);
+    color: #ecc73f !important;
     font-weight: 500;
     }
 
