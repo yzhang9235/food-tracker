@@ -39,8 +39,8 @@ if ($item_name === '') {
 }
 
 //prepare SQL insert statement
-$sql = "INSERT INTO food_items (user_id, item_name, category, quantity, expiration_date, status)
-        VALUES (?, ?, ?, ?, ?, 'active')";
+$sql = "INSERT INTO food_items (user_id, item_name, category, quantity, unit, expiration_date, status)
+        VALUES (?, ?, ?, ?, ?, ?, 'active')";
 
 $stmt = $conn->prepare($sql);
 
