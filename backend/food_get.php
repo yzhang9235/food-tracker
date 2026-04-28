@@ -15,11 +15,10 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 // SQL query to get all food items belonging to this user
-$sql = "SELECT item_id, item_name, category, quantity, unit, expiration_date,
-               created_at AS date_added
+$sql = "SELECT item_id, item_name, category, quantity, unit, expiration_date
         FROM food_items
         WHERE user_id = ?
-        ORDER BY created_at DESC";
+        ORDER BY expiration_date IS NULL, expiration_date ASC, item_name ASC";
 
 $stmt = $conn->prepare($sql);
 
