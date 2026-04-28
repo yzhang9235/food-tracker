@@ -1,41 +1,58 @@
-<!--
-Food Tracker - Delete an item from the inventory
--->
-
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+session_start();
+header("Content-Type: application/json");
 require_once "db_connect.php";
 
-// temporary test userid
-$user_id = 1;
-
-
-if ($_SERVER["REQUEST_METHOD"] != "POST") {
-    die("Invalid request.");
-}
-// make sure an item ID was sent
-if (!isset($_POST['item_id']) || empty($_POST['item_id'])) {
-    die("No item ID provided.");
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Not logged in."
+    ]);
+    exit();
 }
 
-$item_id = $_POST['item_id'];
-// delete only the item that matches both the item ID and the current user
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    echo json_encode([
+        "success" => false,
+        "message" => "Invalid request."
+    ]);
+    exit();
+}
+
+if (empty($_POST['item_id'])) {
+    echo json_encode([
+        "success" => false,
+        "message" => "No item ID provided."
+    ]);
+    exit();
+}
+
+$user_id = $_SESSION['user_id'];
+$item_id = (int) $_POST['item_id'];
+
 $sql = "DELETE FROM food_items WHERE item_id = ? AND user_id = ?";
 $stmt = $conn->prepare($sql);
 
 if (!$stmt) {
-    die("Prepare failed: " . $conn->error);
+    echo json_encode([
+        "success" => false,
+        "message" => "Prepare failed: " . $conn->error
+    ]);
+    exit();
 }
 
 $stmt->bind_param("ii", $item_id, $user_id);
 
 if ($stmt->execute()) {
-    echo "<h1>Delete Successful</h1>";
-    echo "<p>The food item was deleted successfully.</p>";
-    echo '<p><a href="inventory.php">Back to Inventory</a></p>';
+    echo json_encode([
+        "success" => true,
+        "message" => "Item deleted successfully."
+    ]);
 } else {
-    die("Delete failed: " . $stmt->error);
+    echo json_encode([
+        "success" => false,
+        "message" => "Delete failed: " . $stmt->error
+    ]);
 }
 
 $stmt->close();
