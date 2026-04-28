@@ -54,7 +54,7 @@ if (!$stmt) {
 }
 
 // bine parameters to the SQL statement
-$stmt->bind_param("issss", $user_id, $item_name, $category, $quantity, $expiration_date);
+$stmt->bind_param("ississ", $user_id, $item_name, $category, $quantity, $unit, $expiration_date);
 
 // execute the statement
 if ($stmt->execute()) {
