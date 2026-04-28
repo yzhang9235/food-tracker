@@ -1,6 +1,7 @@
 <?php
 session_start();
 header('Content-Type: application/json');
+ini_set('display_errors', 0);
 
 if (!isset($_SESSION['user_id'])) {
 	echo json_encode([
@@ -19,19 +20,28 @@ $ingredients = [];
 if (isset($_GET['ingredients']) && trim($_GET['ingredients']) !== "") {
 	$ingredients = array_map('trim', explode(",", $_GET['ingredients']));
 } else {
-	try {
-		$sql = "SELECT item_name FROM food_items WHERE user_id = :user_id AND status != 'used'";
-		$stmt = $pdo->prepare($sql);
-		$stmt->execute(['user_id' => $user_id]);
-		$ingredients = $stmt->fetchAll(PDO::FETCH_COLUMN);
-	} catch (PDOException $e) {
+	$sql = "SELECT item_name FROM food_items WHERE user_id = ? AND status != 'used'";
+	$stmt = $conn->prepare($sql);
+
+	if (!$stmt) {
 		echo json_encode([
 			"success" => false,
-			"message" => "Database error.",
-			"error" => $e->getMessage()
+			"message" => "Database prepare failed.",
+			"error" => $conn->error
 		]);
 		exit();
 	}
+
+	$stmt->bind_param("i", $user_id);
+	$stmt->execute();
+
+	$result = $stmt->get_result();
+
+	while ($row = $result->fetch_assoc()) {
+		$ingredients[] = $row['item_name'];
+	}
+
+	$stmt->close();
 }
 
 if (empty($ingredients)) {
@@ -46,7 +56,7 @@ $ingredientString = implode(",", $ingredients);
 
 $url = "https://api.spoonacular.com/recipes/findByIngredients"
 	. "?ingredients=" . urlencode($ingredientString)
-	. "&number=6"
+	. "&number=10"
 	. "&ranking=1"
 	. "&ignorePantry=true"
 	. "&apiKey=" . urlencode($spoonacular_api_key);
