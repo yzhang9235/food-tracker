@@ -7,12 +7,11 @@
   <title>FoodTracker — My Inventory</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
-
   <style>
     .inv-page {
       min-height: 100vh;
       padding: 6rem 5% 4rem;
-      max-width: 1200px;
+      max-width: 1100px;
       margin: 0 auto;
     }
 
@@ -41,7 +40,6 @@
       line-height: 1.1;
       opacity: 1;
       animation: none;
-      margin: 0;
     }
 
     .page-header-left h1 em {
@@ -53,7 +51,6 @@
       display: flex;
       gap: 0.75rem;
       align-items: center;
-      flex-wrap: wrap;
     }
 
     .btn-logout {
@@ -66,10 +63,7 @@
       transition: border-color .2s, color .2s;
     }
 
-    .btn-logout:hover {
-      border-color: var(--rust);
-      color: var(--rust);
-    }
+    .btn-logout:hover { border-color: var(--rust); color: var(--rust); }
 
     .stats-bar {
       display: grid;
@@ -103,47 +97,13 @@
     .stat-value.rust { color: var(--rust); }
     .stat-value.sage { color: var(--sage-dk); }
 
-    .camera-wrap {
-      display: none;
-      background: #fff;
-      border-radius: 20px;
-      padding: 1.2rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 4px 24px rgba(42,34,25,0.07);
-    }
-
-    .camera-wrap.open { display: block; }
-
-    #camera-video {
-      width: 100%;
-      max-width: 520px;
-      border-radius: 14px;
-      display: block;
-      margin: 0 auto 1rem;
-      background: #000;
-    }
-
-    .camera-actions {
-      display: flex;
-      gap: 0.75rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    #scan-result {
-      margin-top: 0.9rem;
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
     .add-form {
-      display: none;
       background: #fff;
       border-radius: 20px;
       padding: 2rem;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
       box-shadow: 0 4px 24px rgba(42,34,25,0.07);
+      display: none;
     }
 
     .add-form.open { display: block; }
@@ -152,14 +112,14 @@
       font-family: 'Playfair Display', serif;
       font-size: 1.1rem;
       color: var(--text);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.4rem;
     }
 
     .form-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 1rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.4rem;
     }
 
     .form-group {
@@ -169,7 +129,7 @@
     }
 
     .form-group label {
-      font-size: 0.78rem;
+      font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--muted);
@@ -185,58 +145,67 @@
       font-size: 0.9rem;
       color: var(--text);
       background: var(--cream);
-      transition: border-color .2s;
       outline: none;
+      transition: border-color .2s;
     }
 
     .form-group input:focus,
-    .form-group select:focus {
-      border-color: var(--sage);
-    }
+    .form-group select:focus { border-color: var(--sage); }
 
-    .form-actions {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
+    .form-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
 
     .form-msg {
       margin-top: 0.8rem;
       font-size: 0.85rem;
-      color: var(--sage-dk);
+      min-height: 1.2em;
     }
+
+    .form-msg.ok  { color: var(--sage-dk); }
+    .form-msg.err { color: var(--rust); }
 
     .toolbar {
       display: flex;
-      gap: 0.9rem;
-      justify-content: space-between;
+      gap: 0.75rem;
       align-items: center;
       flex-wrap: wrap;
       margin-bottom: 1.2rem;
     }
 
     .search-wrap {
+      position: relative;
       flex: 1;
-      min-width: 240px;
+      min-width: 200px;
     }
 
-    .search-wrap input,
-    .filter-select {
+    .search-wrap input {
       width: 100%;
-      padding: 0.8rem 0.95rem;
+      padding: 0.6rem 0.9rem;
       border: 1.5px solid var(--warm);
-      border-radius: 12px;
+      border-radius: 100px;
       font-family: 'DM Sans', sans-serif;
-      font-size: 0.92rem;
-      color: var(--text);
+      font-size: 0.88rem;
       background: #fff;
       outline: none;
+      transition: border-color .2s;
+      color: var(--text);
     }
 
+    .search-wrap input:focus { border-color: var(--sage); }
+
     .filter-select {
-      width: auto;
-      min-width: 180px;
+      padding: 0.6rem 1rem;
+      border: 1.5px solid var(--warm);
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      background: #fff;
+      color: var(--text);
+      outline: none;
+      cursor: pointer;
+      transition: border-color .2s;
     }
+
+    .filter-select:focus { border-color: var(--sage); }
 
     .inv-table-wrap {
       background: #fff;
@@ -245,14 +214,7 @@
       overflow: hidden;
     }
 
-    .inv-loading {
-      padding: 2.5rem;
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .inv-empty {
+    .inv-loading, .inv-empty {
       padding: 3rem;
       text-align: center;
       color: var(--muted);
@@ -264,14 +226,12 @@
       border-collapse: collapse;
     }
 
-    .inv-table thead {
-      background: var(--warm);
-    }
+    .inv-table thead { background: var(--warm); }
 
     .inv-table th {
       padding: 1rem 1.2rem;
       text-align: left;
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: var(--muted);
@@ -288,26 +248,21 @@
     }
 
     .inv-table tbody tr:last-child td { border-bottom: none; }
-
-    .inv-table tbody tr:hover {
-      background: rgba(245,240,232,0.6);
-    }
+    .inv-table tbody tr { transition: background .15s; }
+    .inv-table tbody tr:hover { background: rgba(245,240,232,0.5); }
 
     .cat-badge {
       display: inline-block;
       padding: 0.2rem 0.7rem;
       border-radius: 100px;
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       font-weight: 500;
       background: var(--warm);
       color: var(--sage-dk);
       text-transform: capitalize;
     }
 
-    .row-actions {
-      display: flex;
-      gap: 0.5rem;
-    }
+    .row-actions { display: flex; gap: 0.5rem; }
 
     .btn-icon {
       background: none;
@@ -325,8 +280,7 @@
     .btn-icon:hover { border-color: var(--rust); color: var(--rust); }
     .btn-icon.edit:hover { border-color: var(--sage); color: var(--sage-dk); }
 
-    .edit-input,
-    .edit-select {
+    .edit-input {
       padding: 0.35rem 0.6rem;
       border: 1.5px solid var(--sage);
       border-radius: 8px;
@@ -338,19 +292,11 @@
       width: 100%;
     }
 
-    .expiry-soon {
-      color: var(--rust);
-      font-weight: 500;
-    }
-
     @media (max-width: 768px) {
       .inv-page { padding-top: 5rem; }
-      nav .nav-links { display: none; }
-
       .inv-table th:nth-child(4),
-      .inv-table td:nth-child(4) {
-        display: none;
-      }
+      .inv-table td:nth-child(4) { display: none; }
+      nav .nav-links { display: none; }
     }
   </style>
 </head>
@@ -366,6 +312,7 @@
   </nav>
 
   <div class="inv-page">
+
     <div class="page-header">
       <div class="page-header-left">
         <div class="greeting">My Kitchen</div>
@@ -373,7 +320,6 @@
       </div>
       <div class="header-actions">
         <button class="btn btn-primary" id="add-item-btn">+ Add item</button>
-        <button class="btn btn-secondary" id="open-camera-btn">Scan food</button>
         <a href="backend/logout.php" class="btn-logout">Sign out</a>
       </div>
     </div>
@@ -388,79 +334,42 @@
         <div class="stat-value" id="stat-cats">-</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Next expiring</div>
+        <div class="stat-label">Most recent</div>
         <div class="stat-value rust" id="stat-recent" style="font-size:1rem;padding-top:0.5rem;">-</div>
       </div>
     </div>
 
-    <div class="camera-wrap" id="camera-wrap">
-      <video id="camera-video" autoplay playsinline></video>
-      <canvas id="camera-canvas" style="display:none;"></canvas>
-      <div class="camera-actions">
-        <button class="btn btn-primary" id="capture-btn">Capture</button>
-        <button class="btn btn-secondary" id="close-camera-btn">Cancel</button>
-      </div>
-      <p id="scan-result"></p>
-    </div>
-
     <div class="add-form" id="add-form">
       <div class="form-title">Add a new item</div>
-
       <div class="form-grid">
         <div class="form-group">
           <label for="item-name">Item name</label>
           <input type="text" id="item-name" placeholder="e.g. Spinach" />
         </div>
-
         <div class="form-group">
           <label for="item-category">Category</label>
           <select id="item-category">
             <option value="produce">Produce</option>
             <option value="dairy">Dairy</option>
             <option value="meat">Meat</option>
-            <option value="seafood">Frozen</option>
             <option value="pantry">Pantry</option>
             <option value="frozen">Frozen</option>
             <option value="other">Other</option>
           </select>
         </div>
-
         <div class="form-group">
           <label for="item-quantity">Quantity</label>
-          <input type="number" id="item-quantity" min="1" step="1" placeholder="e.g. 2" />
+          <input type="text" id="item-quantity" placeholder="e.g. 1 bag" />
         </div>
-
-        <div class="form-group">
-          <label for="item-unit">Unit</label>
-          <select id="item-unit">
-            <option value="">Select unit</option>
-            <option value="oz">oz</option>
-            <option value="lb">lb</option>
-            <option value="g">g</option>
-            <option value="kg">kg</option>
-            <option value="ml">ml</option>
-            <option value="l">l</option>
-            <option value="pcs">pcs</option>
-            <option value="bag">bag</option>
-            <option value="box">box</option>
-            <option value="bottle">bottle</option>
-            <option value="can">can</option>
-            <option value="jar">jar</option>
-            <option value="pack">pack</option>
-          </select>
-        </div>
-
         <div class="form-group">
           <label for="item-expiry">Expiration date</label>
           <input type="date" id="item-expiry" />
         </div>
       </div>
-
       <div class="form-actions">
         <button class="btn btn-primary" id="submit-item">Save item</button>
         <button class="btn btn-secondary" id="cancel-item">Cancel</button>
       </div>
-
       <p class="form-msg" id="form-msg"></p>
     </div>
 
@@ -468,7 +377,6 @@
       <div class="search-wrap">
         <input type="text" id="search-input" placeholder="Search items..." />
       </div>
-
       <select class="filter-select" id="filter-cat">
         <option value="">All categories</option>
         <option value="produce">Produce</option>
@@ -483,417 +391,225 @@
     <div class="inv-table-wrap">
       <div class="inv-loading" id="inv-loading">Loading your inventory...</div>
       <p class="inv-empty" id="inv-empty" style="display:none;">No items yet - add something above!</p>
-
       <table class="inv-table" id="inv-table" style="display:none;">
         <thead>
           <tr>
             <th>Item</th>
             <th>Category</th>
             <th>Quantity</th>
-            <th>Unit</th>
-            <th>Expiration Date</th>
+            <th>Date added</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody id="inv-body"></tbody>
       </table>
     </div>
+
   </div>
 
   <script>
     const API = 'backend';
     let allItems = [];
-    let cameraStream = null;
 
-    const addFormEl = document.getElementById('add-form');
-    const formMsg = document.getElementById('form-msg');
-
-    document.getElementById('add-item-btn').addEventListener('click', () => {
-      addFormEl.classList.add('open');
-      formMsg.textContent = '';
-    });
-
-    document.getElementById('cancel-item').addEventListener('click', () => {
-      clearForm();
-      addFormEl.classList.remove('open');
-      formMsg.textContent = '';
-    });
-
-    document.getElementById('open-camera-btn').addEventListener('click', async () => {
-      const wrap = document.getElementById('camera-wrap');
-      wrap.classList.add('open');
-      document.getElementById('scan-result').textContent = '';
-
+    async function loadInventory() {
       try {
-        cameraStream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'environment' }
-        });
-        document.getElementById('camera-video').srcObject = cameraStream;
-      } catch (err) {
-        document.getElementById('scan-result').textContent = 'Camera access denied or unavailable.';
-      }
-    });
-
-    document.getElementById('close-camera-btn').addEventListener('click', stopCamera);
-
-    document.getElementById('capture-btn').addEventListener('click', async () => {
-      const video = document.getElementById('camera-video');
-      const canvas = document.getElementById('camera-canvas');
-
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      canvas.getContext('2d').drawImage(video, 0, 0);
-
-      const imageData = canvas.toDataURL('image/jpeg');
-      stopCamera();
-
-      const scanResult = document.getElementById('scan-result');
-      addFormEl.classList.add('open');
-      scanResult.textContent = 'Image captured. Identifying food...';
-
-      try {
-        const res = await fetch('api/claude_api.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ image: imageData })
-        });
-
+        const res  = await fetch(`${API}/food_get.php`, { credentials: 'include' });
         const data = await res.json();
-
-        if (!data.success) {
-          scanResult.textContent = data.error || 'Could not identify the food.';
-          return;
-        }
-
-        document.getElementById('item-name').value = data.name || '';
-        document.getElementById('item-expiry').value = data.expiration_date || '';
-        document.getElementById('item-quantity').value = '';
-
-        const categorySelect = document.getElementById('item-category');
-        const allowed = ['produce', 'dairy', 'meat', 'pantry', 'frozen', 'other'];
-        const apiCategory = (data.category || 'other').toLowerCase();
-        categorySelect.value = allowed.includes(apiCategory) ? apiCategory : 'other';
-
-        if (data.unit) {
-          document.getElementById('item-unit').value = data.unit;
-        }
-
-        scanResult.textContent = 'Food identified. Please review the form before saving.';
+        allItems = Array.isArray(data) ? data : [];
+        updateStats(allItems);
+        renderTable(allItems);
       } catch (err) {
-        scanResult.textContent = 'Could not process the image.';
+        document.getElementById('inv-loading').textContent = 'Could not load inventory.';
       }
-    });
-
-    function stopCamera() {
-      if (cameraStream) {
-        cameraStream.getTracks().forEach(track => track.stop());
-        cameraStream = null;
-      }
-      document.getElementById('camera-wrap').classList.remove('open');
-    }
-
-    function clearForm() {
-      document.getElementById('item-name').value = '';
-      document.getElementById('item-category').value = 'produce';
-      document.getElementById('item-quantity').value = '';
-      document.getElementById('item-unit').value = '';
-      document.getElementById('item-expiry').value = '';
-    }
-
-    function formatDate(dateStr) {
-      if (!dateStr) return '';
-      return dateStr;
-    }
-
-    function daysUntil(dateStr) {
-      if (!dateStr) return null;
-      const today = new Date();
-      today.setHours(0,0,0,0);
-      const target = new Date(dateStr);
-      target.setHours(0,0,0,0);
-      return Math.round((target - today) / (1000 * 60 * 60 * 24));
-    }
-
-    function getFilteredItems() {
-      const query = document.getElementById('search-input').value.trim().toLowerCase();
-      const cat = document.getElementById('filter-cat').value;
-
-      return allItems.filter(item => {
-        const matchesSearch =
-          !query ||
-          (item.item_name || '').toLowerCase().includes(query) ||
-          (item.category || '').toLowerCase().includes(query) ||
-          (item.unit || '').toLowerCase().includes(query);
-
-        const matchesCat = !cat || item.category === cat;
-        return matchesSearch && matchesCat;
-      });
     }
 
     function updateStats(items) {
       document.getElementById('stat-total').textContent = items.length;
-
-      const categories = new Set(
-        items.map(item => item.category).filter(Boolean)
-      );
-      document.getElementById('stat-cats').textContent = categories.size;
-
-      const withExpiry = items.filter(item => item.expiration_date);
-      if (!withExpiry.length) {
-        document.getElementById('stat-recent').textContent = '-';
+      const cats = new Set(items.map(i => i.category).filter(Boolean));
+      document.getElementById('stat-cats').textContent = cats.size || 0;
+      if (items.length) {
+        const latest = items.reduce((a, b) =>
+          new Date(a.date_added) > new Date(b.date_added) ? a : b
+        );
+        document.getElementById('stat-recent').textContent = latest.item_name;
       } else {
-        const nextExpiring = [...withExpiry].sort((a, b) => {
-          return new Date(a.expiration_date) - new Date(b.expiration_date);
-        })[0];
-        document.getElementById('stat-recent').textContent = nextExpiring.item_name || '-';
+        document.getElementById('stat-recent').textContent = '-';
       }
     }
 
-    function renderInventory(items) {
+    function renderTable(items) {
       const loading = document.getElementById('inv-loading');
-      const empty = document.getElementById('inv-empty');
-      const table = document.getElementById('inv-table');
-      const body = document.getElementById('inv-body');
+      const table   = document.getElementById('inv-table');
+      const empty   = document.getElementById('inv-empty');
+      const tbody   = document.getElementById('inv-body');
 
       loading.style.display = 'none';
-      body.innerHTML = '';
 
-      if (!items.length) {
+      if (!items || items.length === 0) {
         table.style.display = 'none';
         empty.style.display = 'block';
-        updateStats(items);
         return;
       }
 
-      table.style.display = 'table';
       empty.style.display = 'none';
+      table.style.display = 'table';
 
-      items.forEach(item => {
-        const tr = document.createElement('tr');
-        const expiryDays = daysUntil(item.expiration_date);
-        const expiryClass = expiryDays !== null && expiryDays <= 3 ? 'expiry-soon' : '';
-
-        tr.innerHTML = `
-          <td>${escapeHtml(item.item_name || '')}</td>
-          <td><span class="cat-badge">${escapeHtml(item.category || 'other')}</span></td>
-          <td>${item.quantity ?? ''}</td>
-          <td>${escapeHtml(item.unit || '')}</td>
-          <td class="${expiryClass}">${formatDate(item.expiration_date || '')}</td>
+      tbody.innerHTML = items.map(item => `
+        <tr data-id="${item.item_id}" id="row-${item.item_id}">
+          <td>${escHtml(item.item_name)}</td>
+          <td><span class="cat-badge">${escHtml(item.category || '-')}</span></td>
+          <td>${escHtml(item.quantity || '-')}</td>
+          <td>${item.date_added ? new Date(item.date_added).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) : '-'}</td>
           <td>
             <div class="row-actions">
-              <button class="btn-icon edit" data-id="${item.item_id}">Edit</button>
-              <button class="btn-icon delete" data-id="${item.item_id}">Delete</button>
+              <button class="btn-icon edit" onclick="startEdit(${item.item_id})">Edit</button>
+              <button class="btn-icon" onclick="deleteItem(${item.item_id})">Delete</button>
             </div>
           </td>
-        `;
+        </tr>
+      `).join('');
+    }
 
-        body.appendChild(tr);
+    function applyFilter() {
+      const q   = document.getElementById('search-input').value.trim().toLowerCase();
+      const cat = document.getElementById('filter-cat').value;
+      const filtered = allItems.filter(item => {
+        const matchQ   = !q   || item.item_name.toLowerCase().includes(q);
+        const matchCat = !cat || item.category === cat;
+        return matchQ && matchCat;
       });
-
-      updateStats(items);
-      attachRowActions();
+      renderTable(filtered);
     }
 
-    function escapeHtml(str) {
-      return String(str)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-    }
+    document.getElementById('search-input').addEventListener('input', applyFilter);
+    document.getElementById('filter-cat').addEventListener('change', applyFilter);
 
-    async function loadInventory() {
-      const loading = document.getElementById('inv-loading');
-      const table = document.getElementById('inv-table');
-      const empty = document.getElementById('inv-empty');
+    document.getElementById('add-item-btn').addEventListener('click', () => {
+      document.getElementById('add-form').classList.toggle('open');
+    });
 
-      loading.style.display = 'block';
-      table.style.display = 'none';
-      empty.style.display = 'none';
-
-      try {
-        const res = await fetch(`${API}/food_get.php`, {
-          credentials: 'include'
-        });
-
-        const data = await res.json();
-        allItems = Array.isArray(data) ? data : [];
-        renderInventory(getFilteredItems());
-      } catch (err) {
-        loading.textContent = 'Could not load inventory.';
-      }
-    }
+    document.getElementById('cancel-item').addEventListener('click', () => {
+      document.getElementById('add-form').classList.remove('open');
+      clearFormMsg();
+    });
 
     document.getElementById('submit-item').addEventListener('click', async () => {
-      const itemName = document.getElementById('item-name').value.trim();
+      const name     = document.getElementById('item-name').value.trim();
       const category = document.getElementById('item-category').value;
-      const quantityRaw = document.getElementById('item-quantity').value;
-      const unit = document.getElementById('item-unit').value;
-      const expirationDate = document.getElementById('item-expiry').value;
+      const quantity = document.getElementById('item-quantity').value.trim();
+      const expiry   = document.getElementById('item-expiry').value;
 
-      formMsg.textContent = '';
-
-      if (!itemName) {
-        formMsg.textContent = 'Item name is required.';
-        return;
-      }
-
-      if (!quantityRaw) {
-        formMsg.textContent = 'Quantity is required.';
-        return;
-      }
-
-      const quantity = parseInt(quantityRaw, 10);
-      if (Number.isNaN(quantity) || quantity < 1) {
-        formMsg.textContent = 'Quantity must be a positive integer.';
-        return;
-      }
+      if (!name) { setFormMsg('Please enter an item name.', 'err'); return; }
 
       const form = new FormData();
-      form.append('item_name', itemName);
+      form.append('item_name', name);
       form.append('category', category);
       form.append('quantity', quantity);
-      form.append('unit', unit);
-      form.append('expiration_date', expirationDate);
+      form.append('expiration_date', expiry);
 
       try {
-        const res = await fetch(`${API}/food_add.php`, {
-          method: 'POST',
-          body: form,
-          credentials: 'include'
-        });
-
+        const res  = await fetch(`${API}/food_add.php`, { method: 'POST', body: form, credentials: 'include' });
         const data = await res.json();
-
         if (data.success) {
-          formMsg.textContent = 'Food added.';
-          clearForm();
-          addFormEl.classList.remove('open');
-          loadInventory();
+          setFormMsg('Item added!', 'ok');
+          document.getElementById('item-name').value     = '';
+          document.getElementById('item-quantity').value = '';
+          document.getElementById('item-expiry').value   = '';
+          await loadInventory();
+          setTimeout(() => {
+            document.getElementById('add-form').classList.remove('open');
+            clearFormMsg();
+          }, 900);
         } else {
-          formMsg.textContent = data.message || 'Could not add item.';
+          setFormMsg(data.message || 'Something went wrong.', 'err');
         }
       } catch (err) {
-        formMsg.textContent = 'Server error.';
+        setFormMsg('Could not connect to server.', 'err');
       }
     });
 
-    function attachRowActions() {
-      document.querySelectorAll('.delete').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const itemId = btn.dataset.id;
-          if (!confirm('Delete this item?')) return;
-
-          const form = new FormData();
-          form.append('item_id', itemId);
-
-          try {
-            const res = await fetch(`${API}/food_delete.php`, {
-              method: 'POST',
-              body: form,
-              credentials: 'include'
-            });
-
-            await res.text();
-            loadInventory();
-          } catch (err) {
-            alert('Could not delete item.');
-          }
-        });
-      });
-
-      document.querySelectorAll('.edit').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const itemId = btn.dataset.id;
-          const item = allItems.find(x => String(x.item_id) === String(itemId));
-          if (!item) return;
-
-          const row = btn.closest('tr');
-          row.innerHTML = `
-            <td><input class="edit-input" id="edit-name-${itemId}" value="${escapeHtml(item.item_name || '')}"></td>
-            <td>
-              <select class="edit-select" id="edit-category-${itemId}">
-                ${['produce','dairy','meat','pantry','frozen','other'].map(cat =>
-                  `<option value="${cat}" ${item.category === cat ? 'selected' : ''}>${cat.charAt(0).toUpperCase() + cat.slice(1)}</option>`
-                ).join('')}
-              </select>
-            </td>
-            <td><input class="edit-input" type="number" min="1" step="1" id="edit-quantity-${itemId}" value="${item.quantity ?? ''}"></td>
-            <td>
-              <select class="edit-select" id="edit-unit-${itemId}">
-                ${['','pcs','bag','box','bottle','can','jar','pack','lb','oz','g','kg','ml','l'].map(unit =>
-                  `<option value="${unit}" ${item.unit === unit ? 'selected' : ''}>${unit || 'Select unit'}</option>`
-                ).join('')}
-              </select>
-            </td>
-            <td><input class="edit-input" type="date" id="edit-expiry-${itemId}" value="${item.expiration_date || ''}"></td>
-            <td>
-              <div class="row-actions">
-                <button class="btn-icon edit save-edit" data-id="${itemId}">Save</button>
-                <button class="btn-icon cancel-edit" data-id="${itemId}">Cancel</button>
-              </div>
-            </td>
-          `;
-
-          row.querySelector('.cancel-edit').addEventListener('click', () => {
-            renderInventory(getFilteredItems());
-          });
-
-          row.querySelector('.save-edit').addEventListener('click', async () => {
-            const name = document.getElementById(`edit-name-${itemId}`).value.trim();
-            const category = document.getElementById(`edit-category-${itemId}`).value;
-            const quantityRaw = document.getElementById(`edit-quantity-${itemId}`).value;
-            const unit = document.getElementById(`edit-unit-${itemId}`).value;
-            const expirationDate = document.getElementById(`edit-expiry-${itemId}`).value;
-
-            const quantity = parseInt(quantityRaw, 10);
-            if (!name) {
-              alert('Item name is required.');
-              return;
-            }
-            if (Number.isNaN(quantity) || quantity < 1) {
-              alert('Quantity must be a positive integer.');
-              return;
-            }
-
-            const form = new FormData();
-            form.append('item_id', itemId);
-            form.append('item_name', name);
-            form.append('category', category);
-            form.append('quantity', quantity);
-            form.append('unit', unit);
-            form.append('expiration_date', expirationDate);
-
-            try {
-              const res = await fetch(`${API}/food_update.php`, {
-                method: 'POST',
-                body: form,
-                credentials: 'include'
-              });
-
-              const data = await res.json();
-
-              if (data.success) {
-                loadInventory();
-              } else {
-                alert(data.message || 'Could not update item.');
-              }
-            } catch (err) {
-              alert('Server error.');
-            }
-          });
-        });
-      });
+    async function deleteItem(id) {
+      if (!confirm('Remove this item from your inventory?')) return;
+      const form = new FormData();
+      form.append('item_id', id);
+      try {
+        await fetch(`${API}/food_delete.php`, { method: 'POST', body: form, credentials: 'include' });
+        await loadInventory();
+      } catch (err) {
+        alert('Could not delete item.');
+      }
     }
 
-    document.getElementById('search-input').addEventListener('input', () => {
-      renderInventory(getFilteredItems());
-    });
+    function startEdit(id) {
+      const row  = document.getElementById(`row-${id}`);
+      const item = allItems.find(i => i.item_id == id);
+      if (!item) return;
 
-    document.getElementById('filter-cat').addEventListener('change', () => {
-      renderInventory(getFilteredItems());
-    });
+      row.innerHTML = `
+        <td><input class="edit-input" id="edit-name-${id}" value="${escHtml(item.item_name)}" /></td>
+        <td>
+          <select class="edit-input" id="edit-cat-${id}">
+            ${['produce','dairy','meat','pantry','frozen','other'].map(c =>
+              `<option value="${c}" ${item.category === c ? 'selected' : ''}>${c.charAt(0).toUpperCase() + c.slice(1)}</option>`
+            ).join('')}
+          </select>
+        </td>
+        <td><input class="edit-input" id="edit-qty-${id}" value="${escHtml(item.quantity || '')}" /></td>
+        <td>${item.date_added ? new Date(item.date_added).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) : '-'}</td>
+        <td>
+          <div class="row-actions">
+            <button class="btn-icon edit" onclick="saveEdit(${id})">Save</button>
+            <button class="btn-icon" onclick="loadInventory()">Cancel</button>
+          </div>
+        </td>
+      `;
+    }
+
+    async function saveEdit(id) {
+      const name = document.getElementById(`edit-name-${id}`).value.trim();
+      const cat  = document.getElementById(`edit-cat-${id}`).value;
+      const qty  = document.getElementById(`edit-qty-${id}`).value.trim();
+
+      if (!name) { alert('Item name cannot be empty.'); return; }
+
+      const form = new FormData();
+      form.append('item_id', id);
+      form.append('item_name', name);
+      form.append('category', cat);
+      form.append('quantity', qty);
+
+      try {
+        const res  = await fetch(`${API}/food_update.php`, { method: 'POST', body: form, credentials: 'include' });
+        const data = await res.json();
+        if (data.success) {
+          await loadInventory();
+        } else {
+          alert(data.message || 'Could not update item.');
+        }
+      } catch (err) {
+        alert('Could not connect to server.');
+      }
+    }
+
+    function setFormMsg(msg, type) {
+      const el = document.getElementById('form-msg');
+      el.textContent = msg;
+      el.className = `form-msg ${type}`;
+    }
+
+    function clearFormMsg() {
+      const el = document.getElementById('form-msg');
+      el.textContent = '';
+      el.className = 'form-msg';
+    }
+
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
 
     loadInventory();
   </script>
