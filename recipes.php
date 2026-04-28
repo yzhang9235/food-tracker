@@ -1,18 +1,13 @@
-<?php
-require_once "backend/auth_check.php";
-?>
+<?php require_once "backend/auth_check.php"; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FoodTracker | Recipe Suggestions</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
-
+  
   <style>
     .recipe-page {
       padding: 7rem 5% 4rem;
@@ -192,11 +187,11 @@ require_once "backend/auth_check.php";
 </head>
 <body>
   <nav>
-    <a href="index.php" class="nav-logo">Food<span>Tracker</span></a>
+    <a class="nav-logo" href="index.php">Food<span>Tracker</span></a>
     <div class="nav-links">
-      <a href="inventory.php">Inventory</a>
-      <a href="recipe.php">Recipes</a>
-      <a href="backend/logout.php" class="btn-nav">Sign out</a>
+        <a href="inventory.php">My Inventory</a>
+        <a href="recipes.php">Recipes</a>
+        <a href="backend/logout.php" class="btn btn-nav">Sign out</a>
     </div>
   </nav>
 
