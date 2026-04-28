@@ -672,7 +672,14 @@
       items.forEach(item => {
         const tr = document.createElement('tr');
         const expiryDays = daysUntil(item.expiration_date);
-        const expiryClass = expiryDays !== null && expiryDays <= 3 ? 'expiry-soon' : '';
+        let expiryClass = '';
+        if (expiryDays !== null) {
+            if (expiryDays < 0) {
+                expiryClass = 'expired-date';
+            } else if (expiryDays <= 3) {
+                expiryClass = 'expiry-soon';
+            }
+        }
 
         tr.innerHTML = `
           <td>${escapeHtml(item.item_name || '')}</td>
